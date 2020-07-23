@@ -10,5 +10,9 @@ namespace TMS.Nbrb.Core.Interfaces
     {
         Task<Currency> GetCurrencyAsync(string code);
         Task<IEnumerable<Currency>> GetAllCurrenciesAsync();
+        Task<Rate> GetRateAsync(string code);
+        Task<IEnumerable<Rate>> GetAllRatesAsync();
+        Task<Rate> GetRateByDateAsync(string code, DateTime date);
+        Task<IEnumerable<Rate>> GetAllRatesByDateAsync(DateTime date);
     }
 }
