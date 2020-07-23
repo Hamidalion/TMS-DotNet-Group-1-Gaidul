@@ -25,5 +25,37 @@ namespace TMS.Nbrb.Core.Services
                 .GetJsonAsync<List<Currency>>();
             return response;
         }
+
+        public async Task<Rate> GetRateAsync(string code)
+        {
+            var response = await "https://www.nbrb.by/api/exrates/rates"
+                .AppendPathSegment(code)
+                .GetJsonAsync<Rate>();
+            return response;
+        }
+
+        public async Task<IEnumerable<Rate>> GetAllRatesAsync()
+        {
+            var response = await "https://www.nbrb.by/api/exrates/rates"
+                .GetJsonAsync<List<Rate>>();
+            return response;
+        }
+
+        public async Task<Rate> GetRateByDateAsync(string code, DateTime date)
+        {
+            var response = await "https://www.nbrb.by/api/exrates/rates"
+                .SetQueryParam("ondate", date.ToShortDateString())
+                .AppendPathSegment(code)
+                .GetJsonAsync<Rate>();
+            return response;
+        }
+
+        public async Task<IEnumerable<Rate>> GetAllRatesByDateAsync(DateTime date)
+        {
+            var response = await "https://www.nbrb.by/api/exrates/rates"
+                .SetQueryParam("ondate", date.ToShortDateString())
+                .GetJsonAsync<List<Rate>>();
+            return response;
+        }
     }
 }
