@@ -6,7 +6,7 @@ using TMS.Nbrb.Core.Models;
 
 namespace TMS.Nbrb.Core.Interfaces
 {
-    interface IRequestService
+    public interface IRequestService
     {
         Task<Currency> GetCurrencyAsync(string code);
         Task<IEnumerable<Currency>> GetAllCurrenciesAsync();
