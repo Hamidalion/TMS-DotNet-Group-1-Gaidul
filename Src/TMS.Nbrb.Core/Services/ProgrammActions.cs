@@ -103,7 +103,6 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine("Incorrect input");
             }
         }
-
         public static async Task ShowBYNRateToData()
         {
             Console.WriteLine("Enter Id of currency");
