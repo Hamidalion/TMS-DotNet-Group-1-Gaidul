@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Text;
 using TMS.Nbrb.Core.Helpers;
 using TMS.Nbrb.Core.Interfaces;
@@ -19,8 +17,24 @@ namespace TMS.Nbrb.Core.Services
         {
             WriteAsync(text, path);
         }
+        public void ReadFile()
+        {
+            Read(Constants.path);
+        }
+        public void ReadFile(string path)
+        {
+            Read(path);
+        }
+        public void ClearFile()
+        {
+            Clear(Constants.path);
+        }
+        public void ClearFile(string path)
+        {
+            Clear(path);
+        }
 
-        private async void WriteAsync (string text, string path)
+        private async void WriteAsync(string text, string path)
         {
             try
             {
@@ -32,12 +46,40 @@ namespace TMS.Nbrb.Core.Services
                 Console.WriteLine("Data was sucssesful write in file");
                 Console.ForegroundColor = ConsoleColor.White;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Incorrect data");
             }
         }
-
-        //ToDo: Make feature to read the file
+        private void Read(string path)
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    Console.WriteLine(sr.ReadToEnd());
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Incorrect data");
+            }
+        }
+        private void Clear(string path)
+        {
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Truncate))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Data was sucssesful cleared in file");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Incorrect data");
+            }
+        }
     }
 }
