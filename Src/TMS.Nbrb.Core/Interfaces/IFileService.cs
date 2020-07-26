@@ -8,5 +8,9 @@ namespace TMS.Nbrb.Core.Interfaces
     {
         public void WriteToFileAsync(string text);
         public void WriteToFileAsync(string text, string path);
+        public void ReadFile(string path);
+        public void ReadFile();
+        public void ClearFile(string path);
+        public void ClearFile();
     }
 }
