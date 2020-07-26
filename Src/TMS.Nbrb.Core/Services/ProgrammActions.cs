@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TMS.Nbrb.Core.Interfaces;
 using TMS.Nbrb.Core.Services;
@@ -179,7 +180,7 @@ namespace TMS.Nbrb.Core.Service
             if (userDate <= DateTime.Today)
             {
                 var data = await requestService.GetAllRatesByDateAsync(userDate);
-                if (data != null)
+                if (data != null && data.Count() != 0)
                 {
                     foreach (var rate in data)
                     {
@@ -211,7 +212,7 @@ namespace TMS.Nbrb.Core.Service
                 }
                 else
                 {
-                    Console.WriteLine("Incorrect data");
+                    Console.WriteLine("Incorrect input");
                 }
             }
             else
