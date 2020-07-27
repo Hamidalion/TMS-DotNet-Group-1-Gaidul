@@ -1,40 +1,46 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using TMS.Nbrb.Core.Helpers;
 using TMS.Nbrb.Core.Interfaces;
 
 namespace TMS.Nbrb.Core.Services
 {
+    /// <inheritdoc cref="IFileService"/>
     public class FileService : IFileService
     {
-        public void WriteToFileAsync(string text)
+        public async Task WriteToFileAsync(string text)
         {
-            WriteAsync(text, Constants.path);
+            await WriteAsync(text, Constants.FileName);
         }
 
-        public void WriteToFileAsync(string text, string path)
+        public async Task WriteToFileAsync(string text, string path)
         {
-            WriteAsync(text, path);
-        }
-        public void ReadFile()
-        {
-            Read(Constants.path);
-        }
-        public void ReadFile(string path)
-        {
-            Read(path);
-        }
-        public void ClearFile()
-        {
-            Clear(Constants.path);
-        }
-        public void ClearFile(string path)
-        {
-            Clear(path);
+            await WriteAsync(text, path);
         }
 
-        private async void WriteAsync(string text, string path)
+        public async Task ReadFileAsync()
+        {
+            await ReadAsync(Constants.FileName);
+        }
+
+        public async Task ReadFileAsync(string path)
+        {
+            await ReadAsync(path);
+        }
+
+        public async Task ClearFileAsync()
+        {
+            await ClearAsync(Constants.FileName);
+        }
+
+        public async Task ClearFileAsync(string path)
+        {
+            await ClearAsync(path);
+        }
+
+        private async Task WriteAsync(string text, string path)
         {
             try
             {
@@ -42,6 +48,7 @@ namespace TMS.Nbrb.Core.Services
                 {
                     await sw.WriteLineAsync(text);
                 }
+
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Data was sucssesful write in file");
                 Console.ForegroundColor = ConsoleColor.White;
@@ -51,13 +58,14 @@ namespace TMS.Nbrb.Core.Services
                 Console.WriteLine("Incorrect data");
             }
         }
-        private void Read(string path)
+
+        private async Task ReadAsync(string path)
         {
             try
             {
                 using (StreamReader sr = new StreamReader(path))
                 {
-                    Console.WriteLine(sr.ReadToEnd());
+                    Console.WriteLine(await sr.ReadToEndAsync());
                 }
             }
             catch (Exception)
@@ -65,7 +73,8 @@ namespace TMS.Nbrb.Core.Services
                 Console.WriteLine("Incorrect data");
             }
         }
-        private void Clear(string path)
+
+        private Task ClearAsync(string path)
         {
             try
             {
@@ -80,6 +89,8 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine("Incorrect data");
             }
+
+            return Task.CompletedTask;
         }
     }
 }

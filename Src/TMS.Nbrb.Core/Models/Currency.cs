@@ -2,6 +2,9 @@
 
 namespace TMS.Nbrb.Core.Models
 {
+    /// <summary>
+    /// Валюта.
+    /// </summary>
     public class Currency
     {
         public int Cur_ID { get; set; }
@@ -21,6 +24,5 @@ namespace TMS.Nbrb.Core.Models
         public int Cur_Periodicity { get; set; }
         public DateTime Cur_DateStart { get; set; }
         public DateTime Cur_DateEnd { get; set; }
-
     }
 }

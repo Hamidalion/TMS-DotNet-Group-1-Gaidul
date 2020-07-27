@@ -2,21 +2,25 @@
 using Flurl.Http;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
+using TMS.Nbrb.Core.Helpers;
 using TMS.Nbrb.Core.Interfaces;
 using TMS.Nbrb.Core.Models;
 
 namespace TMS.Nbrb.Core.Services
 {
+    /// <inheritdoc cref="IRequestService"/>
     public class RequestService : IRequestService
     {
         public async Task<Currency> GetCurrencyAsync(string code)
         {
             try
             {
-                var response = await "https://www.nbrb.by/api/exrates/currencies"
-                                .AppendPathSegment(code)
-                                .GetJsonAsync<Currency>();
+                var response = await Constants.UrlApi
+                    .AppendPathSegments("exrates", "currencies", code)
+                    .GetJsonAsync<Currency>();
+
                 return response;
             }
             catch (FlurlHttpTimeoutException)
@@ -27,6 +31,11 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             return null;
         }
 
@@ -34,8 +43,10 @@ namespace TMS.Nbrb.Core.Services
         {
             try
             {
-                var response = await "https://www.nbrb.by/api/exrates/currencies"
-                .GetJsonAsync<List<Currency>>();
+                var response = await Constants.UrlApi
+                    .AppendPathSegments("exrates", "currencies")
+                    .GetJsonAsync<List<Currency>>();
+
                 return response;
             }
             catch (FlurlHttpTimeoutException)
@@ -46,17 +57,22 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine(ex.Message);
             }
-            return null;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
+            return null;
         }
 
         public async Task<Rate> GetRateAsync(string code)
         {
             try
             {
-                var response = await "https://www.nbrb.by/api/exrates/rates"
-                               .AppendPathSegment(code)
-                               .GetJsonAsync<Rate>();
+                var response = await Constants.UrlApi
+                    .AppendPathSegments("exrates", "rates", code)
+                    .GetJsonAsync<Rate>();
+
                 return response;
             }
             catch (FlurlHttpTimeoutException)
@@ -67,6 +83,11 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             return null;
         }
 
@@ -74,14 +95,20 @@ namespace TMS.Nbrb.Core.Services
         {
             try
             {
-                var response1 = await "https://www.nbrb.by/api/exrates/rates"
-                                .SetQueryParam("periodicity", 0)
-                                .GetJsonAsync<List<Rate>>();
-                var response2 = await "https://www.nbrb.by/api/exrates/rates"
-                    .SetQueryParam("periodicity", 1)
-                    .GetJsonAsync<List<Rate>>();
-                response1.AddRange(response2);
-                return response1;
+                var rates = new List<Rate>();
+
+                static async Task<List<Rate>> SendRequestAsync(int periodicity)
+                {
+                    return await Constants.UrlApi
+                        .AppendPathSegments("exrates", "rates")
+                        .SetQueryParam("periodicity", periodicity)
+                        .GetJsonAsync<List<Rate>>();
+                }
+
+                rates.AddRange(await SendRequestAsync(0));
+                rates.AddRange(await SendRequestAsync(1));
+
+                return rates;
             }
             catch (FlurlHttpTimeoutException)
             {
@@ -91,6 +118,11 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             return null;
         }
 
@@ -98,10 +130,11 @@ namespace TMS.Nbrb.Core.Services
         {
             try
             {
-                var response = await "https://www.nbrb.by/api/exrates/rates"
-               .AppendPathSegment(code)
-               .SetQueryParam("ondate", date.ToString("yyyy-MM-dd"))
-               .GetJsonAsync<Rate>();
+                var response = await Constants.UrlApi
+                    .AppendPathSegments("exrates", "rates", code)
+                    .SetQueryParam("ondate", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                    .GetJsonAsync<Rate>();
+
                 return response;
             }
             catch (FlurlHttpTimeoutException)
@@ -112,6 +145,11 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             return null;
         }
 
@@ -119,14 +157,20 @@ namespace TMS.Nbrb.Core.Services
         {
             try
             {
-                var response1 = await "https://www.nbrb.by/api/exrates/rates"
-                                .SetQueryParams(new { ondate = date.ToString("yyyy-MM-dd"), periodicity = 0 })
-                                .GetJsonAsync<List<Rate>>();
-                var response2 = await "https://www.nbrb.by/api/exrates/rates"
-                    .SetQueryParams(new { ondate = date.ToString("yyyy-MM-dd"), periodicity = 1 })
-                    .GetJsonAsync<List<Rate>>();
-                response1.AddRange(response2);
-                return response1;
+                var rates = new List<Rate>();
+
+                static async Task<List<Rate>> SendRequestAsync(DateTime date, int periodicity)
+                {
+                    return await Constants.UrlApi
+                        .AppendPathSegments("exrates", "rates")
+                        .SetQueryParams(new { ondate = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), periodicity })
+                        .GetJsonAsync<List<Rate>>();
+                }
+
+                rates.AddRange(await SendRequestAsync(date, 0));
+                rates.AddRange(await SendRequestAsync(date, 1));
+
+                return rates;
             }
             catch (FlurlHttpTimeoutException)
             {
@@ -136,6 +180,11 @@ namespace TMS.Nbrb.Core.Services
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             return null;
         }
     }

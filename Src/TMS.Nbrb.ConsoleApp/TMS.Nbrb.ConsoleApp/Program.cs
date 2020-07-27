@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Threading.Tasks;
 using TMS.Nbrb.Core.Service;
 
 namespace TMS.Nbrb.ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Welcome to the app!");
             while (true)
@@ -17,48 +16,42 @@ namespace TMS.Nbrb.ConsoleApp
                 {
                     case 1:
                         {
-                            var task = Task.Run(async () => { await ProgrammActions.ShowAllCurrencies(); });
-                            task.Wait();
+                            ProgrammActions.ShowAllCurrenciesAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 2:
                         {
-                            var task = Task.Run(async () => { await ProgrammActions.ShowCurrency(); });
-                            task.Wait();
+                            ProgrammActions.ShowCurrencyAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 3:
                         {
-                            var task = Task.Run(async () => { await ProgrammActions.ShowAllRatesToBYN(); });
-                            task.Wait();
+                            ProgrammActions.ShowAllRatesToBynAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 4:
                         {
-                            var task = Task.Run(async () => { await ProgrammActions.ShowBYNRate(); });
-                            task.Wait();
+                            ProgrammActions.ShowBynRateAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 5:
                         {
-                            var task = Task.Run(async () => { await ProgrammActions.ShowBYNRateToData(); });
-                            task.Wait();
+                            ProgrammActions.ShowBynRateToDateAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 6:
                         {
-                            var task = Task.Run(async () => { await ProgrammActions.ShowAllBYNRatesToData(); });
-                            task.Wait();
+                            ProgrammActions.ShowAllBynRatesToDateAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 7:
                         {
-                            ProgrammActions.ShowRecordedData();
+                            ProgrammActions.ShowRecordedDataAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 8:
                         {
-                            ProgrammActions.ClearAllData();
+                            ProgrammActions.ClearAllDataAsync().GetAwaiter().GetResult();
                             break;
                         }
                     case 9:

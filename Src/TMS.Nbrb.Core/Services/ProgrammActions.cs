@@ -6,10 +6,17 @@ using TMS.Nbrb.Core.Services;
 
 namespace TMS.Nbrb.Core.Service
 {
+    /// <summary>
+    /// Действия программы.
+    /// </summary>
     public static class ProgrammActions
     {
         private static readonly IRequestService requestService = new RequestService();
         private static readonly IFileService fileService = new FileService();
+
+        /// <summary>
+        /// Показать меню.
+        /// </summary>
         public static void ShowMenu()
         {
             Console.WriteLine("Select the required action :");
@@ -24,7 +31,11 @@ namespace TMS.Nbrb.Core.Service
             Console.WriteLine("9.Exit");
             Console.WriteLine();
         }
-        public static async Task ShowAllCurrencies()
+
+        /// <summary>
+        /// Показать список всех валют.
+        /// </summary>
+        public static async Task ShowAllCurrenciesAsync()
         {
             var data = await requestService.GetAllCurrenciesAsync();
             foreach (var currency in data)
@@ -32,10 +43,15 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine($"ID of currency:{ currency.Cur_ID} Name of currency:{currency.Cur_Name}");
             }
         }
-        public static async Task ShowCurrency()
+
+        /// <summary>
+        /// Показать валюту.
+        /// </summary>
+        public static async Task ShowCurrencyAsync()
         {
             Console.WriteLine("Enter Id of currency");
             var userinput = Console.ReadLine();
+
             if (!string.IsNullOrEmpty(userinput))
             {
                 var data = await requestService.GetCurrencyAsync(userinput);
@@ -53,7 +69,11 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine("Incorrect input");
             }
         }
-        public static async Task ShowAllRatesToBYN()
+
+        /// <summary>
+        /// Показать список всех курсов валют.
+        /// </summary>
+        public static async Task ShowAllRatesToBynAsync()
         {
             var data = await requestService.GetAllRatesAsync();
             foreach (var rate in data)
@@ -61,7 +81,11 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine($"{rate.Cur_Scale} {rate.Cur_Name} Rate to currency:{rate.Cur_OfficialRate} Date:{rate.Date}");
             }
         }
-        public static async Task ShowBYNRate()
+
+        /// <summary>
+        /// Показать курс бел. руб. к определенной валюте.
+        /// </summary>
+        public static async Task ShowBynRateAsync()
         {
             Console.WriteLine("Enter Id of currency");
             var userinput = Console.ReadLine();
@@ -78,7 +102,7 @@ namespace TMS.Nbrb.Core.Service
                     {
                         case 1:
                             {
-                                fileService.WriteToFileAsync($"Scale: {data.Cur_Scale} {data.Cur_Name} Rate to currency:{data.Cur_OfficialRate} Date:{data.Date}");
+                                await fileService.WriteToFileAsync($"Scale: {data.Cur_Scale} {data.Cur_Name} Rate to currency:{data.Cur_OfficialRate} Date:{data.Date}");
                                 break;
                             }
                         case 2:
@@ -103,7 +127,12 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine("Incorrect input");
             }
         }
-        public static async Task ShowBYNRateToData()
+
+        /// <summary>
+        /// Показать курс бел. руб. к определенной валюте и определенной дате.
+        /// </summary>
+        /// <returns></returns>
+        public static async Task ShowBynRateToDateAsync()
         {
             Console.WriteLine("Enter Id of currency");
             var userinput = Console.ReadLine();
@@ -132,7 +161,7 @@ namespace TMS.Nbrb.Core.Service
                             {
                                 case 1:
                                     {
-                                        fileService.WriteToFileAsync($"Scale: {data.Cur_Scale} {dataRate.Cur_Name} Rate to currency:{dataRate.Cur_OfficialRate} Date:{dataRate.Date}");
+                                        await fileService.WriteToFileAsync($"Scale: {data.Cur_Scale} {dataRate.Cur_Name} Rate to currency:{dataRate.Cur_OfficialRate} Date:{dataRate.Date}");
                                         break;
                                     }
                                 case 2:
@@ -167,7 +196,11 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine("Incorrect input");
             }
         }
-        public static async Task ShowAllBYNRatesToData()
+
+        /// <summary>
+        /// Показать список всех курсов бел. руб. к определенной дате.
+        /// </summary>
+        public static async Task ShowAllBynRatesToDateAsync()
         {
             var usCulture = new System.Globalization.CultureInfo("ru-RU");
             Console.WriteLine("Please specify a date. Format: " + usCulture.DateTimeFormat.ShortDatePattern);
@@ -179,7 +212,7 @@ namespace TMS.Nbrb.Core.Service
             if (userDate <= DateTime.Today)
             {
                 var data = await requestService.GetAllRatesByDateAsync(userDate);
-                if (data != null && data.Count() != 0)
+                if (data != null && data.Any())
                 {
                     foreach (var rate in data)
                     {
@@ -193,20 +226,22 @@ namespace TMS.Nbrb.Core.Service
                             {
                                 foreach (var rate in data)
                                 {
-                                    fileService.WriteToFileAsync($"Scale: {rate.Cur_Name} Rate to currency:{rate.Cur_OfficialRate} Date:{rate.Date}");
+                                    await fileService.WriteToFileAsync($"Scale: {rate.Cur_Name} Rate to currency:{rate.Cur_OfficialRate} Date:{rate.Date}");
                                 }
-                                break;
                             }
+                            break;
+
                         case 2:
                             {
                                 Console.WriteLine("No data recorded");
-                                break;
                             }
+                            break;
+
                         default:
                             {
                                 Console.WriteLine("Incorrect input");
-                                break;
                             }
+                            break;
                     }
                 }
                 else
@@ -219,13 +254,23 @@ namespace TMS.Nbrb.Core.Service
                 Console.WriteLine("Incorrect input");
             }
         }
-        public static void ShowRecordedData()
+
+        /// <summary>
+        /// Показать записанные данные.
+        /// </summary>
+        /// <returns></returns>
+        public static async Task ShowRecordedDataAsync()
         {
-            fileService.ReadFile();
+            await fileService.ReadFileAsync();
         }
-        public static void ClearAllData()
+
+        /// <summary>
+        /// Очистить все записанные данные.
+        /// </summary>
+        /// <returns></returns>
+        public static async Task ClearAllDataAsync()
         {
-            fileService.ClearFile();
+            await fileService.ClearFileAsync();
         }
     }
 }
